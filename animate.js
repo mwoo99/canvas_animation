@@ -6,9 +6,10 @@ var stopButton = document.getElementById( "stop" );
 
 //prepare to interact with canvas in 2D
 var ctx = c.getContext("2d");
-
-//set fill color to lello
+var dvd = new Image();
+dvd.src = "dvd.jpg"
 ctx.fillStyle = "#ffff00";
+
 
 
 var requestID;
@@ -67,8 +68,7 @@ var growingDot = function() {
     //Q: what happens w/ & w/o next line?
     //window.cancelAnimationFrame( requestID );
 
-    var drawDot = function(growing) {
-	console.log( requestID )
+    var drawDot = function() {
 
 	ctx.clearRect( 0, 0, c.width, c.height );
 	
@@ -77,23 +77,42 @@ var growingDot = function() {
 	ctx.stroke();
 	ctx.fill();
 	
-	if (growing){
-	    if (radius >= c.width/2){
-		growing = false;
-		console.log("shrink");
-	    }
-	    else {radius++;};
-	else{
-	    if (radius == 0){
-		growing = true;
-		console.log("growing");
-		}
-	    else {radius--;}
+	if (radius == 250) { growing = false; }
+    if (radius == 0) {growing = true;}
+    if (growing) { radius ++; }
+    else { radius --;}
 
 	requestID = window.requestAnimationFrame( drawDot );
     };
     drawDot();
 };
+
+
+var animateDVD = function(){
+  window.cancelAnimationFrame( requestID );
+    var x = Math.random() * 100;
+    var y = Math.random() * 100;
+    var right = true;
+    var down = true;
+
+  var drawDVD = function(){
+    ctx.clearRect(0, 0, 500, 500);
+    ctx.drawImage(dvd, x, y, 150 , 100);
+
+    if (x >= 350) { right = false; }
+    else if (x <= 0) { right = true; }
+    if (y <= 0) { down = true; }
+    else if (y >= 400) { down = false; }
+
+    if (right) { x++; }
+    else  { x--; }
+    if (down) { y++; }
+    else { y--; }
+
+    requestId = window.requestAnimationFrame(drawDVD);
+  }
+  drawDVD();
+}
 
 var stopIt = function() {
     console.log( requestID );
@@ -102,7 +121,7 @@ var stopIt = function() {
 
 
 //tie click-on-canvas to anime function
-c.addEventListener( "click", growingDot )
+c.addEventListener( "click", animateDVD )
 
 //ideally, clicking stop will make the animation stop
 stopButton.addEventListener( "click",  stopIt );
